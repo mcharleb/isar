@@ -69,7 +69,7 @@ if [ ! -e /dev/console ]; then
 fi
 
 # Enable tty
-echo "T0:23:respawn:/sbin/getty -L $MACHINE_SERIAL $BAUDRATE_TTY vt100" >> /etc/inittab
+printf 'T0:123:respawn:/sbin/getty -L %s %d vt100\n' $MACHINE_SERIAL $BAUDRATE_TTY >> /etc/inittab
 
 # Undo setup script changes
 if [ -x "$TARGET/sbin/start-stop-daemon.REAL" ]; then

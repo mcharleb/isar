@@ -68,8 +68,7 @@ devtmpfs	/dev		devtmpfs	mode=0755,nosuid	0	0
 EOF
 
 # Enable tty
-echo "T0:23:respawn:/sbin/getty -L $MACHINE_SERIAL $BAUDRATE_TTY vt100" \
-    >> /etc/inittab
+printf 'T0:23:respawn:/sbin/getty -L %s %d vt100\n' $MACHINE_SERIAL $BAUDRATE_TTY >> /etc/inittab
 
 # Undo setup script changes
 if [ -x "$TARGET/sbin/start-stop-daemon.REAL" ]; then

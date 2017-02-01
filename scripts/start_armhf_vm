@@ -1,0 +1,43 @@
+#/bin/sh
+#
+# This software is a part of ISAR.
+# Copyright (C) 2015-2016 ilbers GmbH
+
+KERNEL="tmp/deploy/images/vmlinuz-3.16.0-4-armmp"
+INITRD="tmp/deploy/images/initrd.img-3.16.0-4-armmp"
+ROOTFS="tmp/deploy/images/isar-image-base-qemuarm.ext4.img"
+
+start_qemuarm() {
+    qemu-system-arm \
+        -m 1024M -M virt -cpu cortex-a15 -nographic \
+        -kernel $KERNEL \
+        -initrd $INITRD \
+        -append "console=ttyAMA0 root=/dev/vda rw" \
+        -drive file=$ROOTFS,if=none,format=raw,id=hd0 \
+        -device virtio-blk-device,drive=hd0
+}
+
+show_help() {
+    echo "This script runs ISAR image in QEMU emulator."
+    echo
+    echo "Usage:"
+    echo "    start-isar-qemuarm [params] [BUILD_DIR]"
+    echo "BUILD_DIR is your ISAR build folder. If not set, current folder"
+    echo "is used."
+    echo
+    echo "Parameters:"
+    echo "    --help        display this message and exit."
+}
+
+if [ "$#" == "1" -a "$1" == "--help" ]; then
+    show_help
+    exit 0
+fi
+
+if [ "$#" == "0" ]; then
+    BUILD_DIR=$PWD
+else
+    BUILD_DIR=$1
+fi
+
+start_qemuarm $BUILD_DIR

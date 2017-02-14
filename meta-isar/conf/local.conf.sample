@@ -155,5 +155,9 @@ CONF_VERSION = "1"
 IMAGE_INSTALL = "hello"
 
 #
-# Default parallel jobs for bitbake:
-BB_NUMBER_THREADS = "4"
+# Default to setting automatically based on cpu count
+BB_NUMBER_THREADS ?= "4"
+
+#
+# Default to setting automatically based on cpu count
+PARALLEL_MAKE ?= "-j 4"

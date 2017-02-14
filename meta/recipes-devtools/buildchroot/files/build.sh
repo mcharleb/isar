@@ -23,4 +23,4 @@ for i in configure aclocal.m4 Makefile.am Makefile.in; do
 done
 
 # Build the package
-dpkg-buildpackage
+dpkg-buildpackage -us -uc

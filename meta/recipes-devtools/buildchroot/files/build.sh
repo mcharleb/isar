@@ -11,6 +11,12 @@ cd $1
 # directly suitable for apt-get install.
 DEPS=`perl -ne 'next if /^#/; $p=(s/^Build-Depends:\s*/ / or (/^ / and $p)); s/,|\n|\([^)]+\)|\[[^]]+\]//mg; print if $p' < debian/control`
 
+# Lock the buildchroot before using `dpkg`
+readonly PATH_LOCK="../../../../tmp/build_deps_install.lock"
+while ! mkdir "${PATH_LOCK}" 2>/dev/null; do
+    sleep 1
+done
+
 # Install deps
 apt-get install -y $DEPS
 
@@ -21,6 +27,9 @@ for i in configure aclocal.m4 Makefile.am Makefile.in; do
         touch "${i}"
     fi
 done
+
+# Remove the lock to allow other packages to use `dpkg`
+rm -r "${PATH_LOCK}"
 
 # Build the package
 dpkg-buildpackage -us -uc

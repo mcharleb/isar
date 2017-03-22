@@ -4,7 +4,7 @@
 # Copyright (C) 2015-2016 ilbers GmbH
 
 start_qemu_i386() {
-    eval "$(grep '^[A-Z]' "$(dirname "$0")/../meta-isar/conf/machine/qemui386.conf" | sed 's/[[:space:]]*=[[:space:]]/=/')"
+    eval "$(grep '^\(KERNEL_IMAGE\|INITRD_IMAGE\)' "$(dirname "$0")/../meta-isar/conf/machine/qemui386.conf" | sed 's/[[:space:]]*=[[:space:]]/=/')"
 
     readonly PATH_KERNEL="${1}/tmp/deploy/images/${KERNEL_IMAGE}"
     readonly PATH_INITRD="${1}/tmp/deploy/images/${INITRD_IMAGE}"

@@ -3,17 +3,19 @@
 # This software is a part of ISAR.
 # Copyright (C) 2015-2016 ilbers GmbH
 
-KERNEL="tmp/deploy/images/vmlinuz-3.16.0-4-armmp"
-INITRD="tmp/deploy/images/initrd.img-3.16.0-4-armmp"
-ROOTFS="tmp/deploy/images/isar-image-base-qemuarm.ext4.img"
-
 start_qemuarm() {
+    eval "$(grep '^\(KERNEL_IMAGE\|INITRD_IMAGE\)' "$(dirname "$0")/../meta-isar/conf/machine/qemuarm.conf" | sed 's/[[:space:]]*=[[:space:]]/=/')"
+
+    readonly PATH_KERNEL="${1}/tmp/deploy/images/${KERNEL_IMAGE}"
+    readonly PATH_INITRD="${1}/tmp/deploy/images/${INITRD_IMAGE}"
+    readonly PATH_ROOTFS="${1}/tmp/deploy/images/isar-image-base-qemuarm.ext4.img"
+
     qemu-system-arm \
         -m 1024M -M virt -cpu cortex-a15 -nographic \
-        -kernel $KERNEL \
-        -initrd $INITRD \
+        -kernel "${PATH_KERNEL}" \
+        -initrd "${PATH_INITRD}" \
         -append "console=ttyAMA0 root=/dev/vda rw" \
-        -drive file=$ROOTFS,if=none,format=raw,id=hd0 \
+        -drive file="${PATH_ROOTFS},if=none,format=raw,id=hd0" \
         -device virtio-blk-device,drive=hd0
 }
 

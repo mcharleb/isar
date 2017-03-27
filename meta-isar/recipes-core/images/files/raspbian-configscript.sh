@@ -8,6 +8,8 @@ set -e
 readonly MACHINE_SERIAL="$1"
 readonly BAUDRATE_TTY="$2"
 readonly ROOTFS_DEV="$3"
+readonly DEBCACHEMNT="$4"
+readonly DEBDISTRONAME="$5"
 
 cat >> /etc/default/locale << EOF
 LANG=en_US.UTF-8
@@ -87,4 +89,10 @@ KERNEL_IMAGE=`ls /boot | grep vmlinuz`
 
 cat > /boot/config.txt << EOF
 kernel=$KERNEL_IMAGE
+EOF
+
+mkdir -p /etc/apt/sources.list.d/
+cat <<EOF >/etc/apt/sources.list.d/${DEBDISTRONAME}.list
+deb file:${DEBCACHEMNT}/ ${DEBDISTRONAME} main
+deb-src file:${DEBCACHEMNT}/ ${DEBDISTRONAME} main
 EOF

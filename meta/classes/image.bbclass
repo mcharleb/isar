@@ -11,18 +11,33 @@ inherit ${IMAGE_TYPE}
 
 do_populate[stamp-extra-info] = "${MACHINE}"
 
-# Install Debian packages, that were built from sources
+# Install Debian packages from the cache
 do_populate() {
+    readonly DIR_CACHE="${DEBCACHEDIR}/${DISTRO}"
+
     if [ -n "${IMAGE_INSTALL}" ]; then
-        sudo mkdir -p ${S}/deb
+        if [ "${DEBCACHE_ENABLED}" != "0" ]; then
+            sudo mkdir -p "${S}/${DEBCACHEMNT}"
+            sudo mount -o bind "${DIR_CACHE}" "${S}/${DEBCACHEMNT}"
 
-        for p in ${IMAGE_INSTALL}; do
-            sudo cp ${DEPLOY_DIR_DEB}/${p}_*.deb ${S}/deb
-        done
+            sudo chroot "${S}" apt-get update -y
+            for package in ${IMAGE_INSTALL}; do
+                sudo chroot "${S}" apt-get install -t "${DEBDISTRONAME}" -y --allow-unauthenticated "${package}"
+            done
 
-        sudo chroot ${S} /usr/bin/dpkg -i -R /deb
+            sudo umount "${S}/${DEBCACHEMNT}"
+        else
+            sudo mkdir -p ${S}/deb
 
-        sudo rm -rf ${S}/deb
+            for p in ${IMAGE_INSTALL}; do
+                find "${DEPLOY_DIR_DEB}" -type f -name '*.deb' -exec \
+                    sudo cp '{}' "${S}/deb/" \;
+            done
+
+            sudo chroot ${S} /usr/bin/dpkg -i -R /deb
+
+            sudo rm -rf ${S}/deb
+        fi
     fi
 }
 

@@ -49,7 +49,7 @@ do_rootfs() {
     sudo multistrap -a ${DISTRO_ARCH} -d "${S}" -f "${WORKDIR}/multistrap.conf" || true
 
     # Configure root filesystem
-    sudo chroot ${S} /configscript.sh ${MACHINE_SERIAL} ${BAUDRATE_TTY} ${ROOTFS_DEV}
+    sudo chroot ${S} /configscript.sh ${MACHINE_SERIAL} ${BAUDRATE_TTY} ${ROOTFS_DEV} ${DEBCACHEMNT} ${DEBDISTRONAME}
     sudo rm ${S}/configscript.sh
 }
 

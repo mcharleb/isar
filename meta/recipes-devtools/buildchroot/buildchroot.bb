@@ -21,9 +21,9 @@ BUILDCHROOT_PREINSTALL ?= "gcc \
                            apt \
                            automake"
 
-WORKDIR = "${TMPDIR}/work/${PF}/${DISTRO}"
+WORKDIR = "${TMPDIR}/work/${PF}/${DISTRO_ARCH}/${DISTRO}"
 
-do_build[stamp-extra-info] = "${DISTRO}"
+do_build[stamp-extra-info] = "${DISTRO_ARCH}-${DISTRO}"
 
 do_build() {
     install -d -m 755 ${WORKDIR}/hooks_multistrap
@@ -40,9 +40,9 @@ do_build() {
     sed -i 's|##DISTRO_APT_SOURCE##|${DISTRO_APT_SOURCE}|' ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO_SUITE##|${DISTRO_SUITE}|' ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO_COMPONENTS##|${DISTRO_COMPONENTS}|' ${WORKDIR}/multistrap.conf
-    sed -i 's|##CONFIG_SCRIPT##|./tmp/work/${PF}/${DISTRO}/configscript.sh|' ${WORKDIR}/multistrap.conf
-    sed -i 's|##SETUP_SCRIPT##|./tmp/work/${PF}/${DISTRO}/setup.sh|' ${WORKDIR}/multistrap.conf
-    sed -i 's|##DIR_HOOKS##|./tmp/work/${PF}/${DISTRO}/hooks_multistrap|' ${WORKDIR}/multistrap.conf
+    sed -i 's|##CONFIG_SCRIPT##|./tmp/work/${PF}/${DISTRO_ARCH}/${DISTRO}/configscript.sh|' ${WORKDIR}/multistrap.conf
+    sed -i 's|##SETUP_SCRIPT##|./tmp/work/${PF}/${DISTRO_ARCH}/${DISTRO}/setup.sh|' ${WORKDIR}/multistrap.conf
+    sed -i 's|##DIR_HOOKS##|./tmp/work/${PF}/${DISTRO_ARCH}/${DISTRO}/hooks_multistrap|' ${WORKDIR}/multistrap.conf
 
     # Multistrap config use relative paths, so ensure that we are in the right folder
     cd ${TOPDIR}

@@ -72,11 +72,33 @@ do_install() {
                 > "${DIR_CACHE}/conf/distributions"
         fi
 
+        print_field_value() {
+            awk "\$1 == \"${1}:\" { print \$2; }"
+        }
+        call_reprepro() {
+            reprepro --waitforlock 3 -b "${DIR_CACHE}" --dbdir "${DIR_DB}" \
+                -C main "$@"
+        }
+
         # Add binary and source packages to the deb cache
         # If the cache doesn't exist yet, it will be created using the `distributions`
         # file generated above
-        ls -1 "${BUILDROOT}"/*.deb "${BUILDROOT}"/*.dsc | while read -r p; do
-            reprepro --waitforlock 3 -b "${DIR_CACHE}" --dbdir "${DIR_DB}" -C main "include${p##*.}" "${DEBDISTRONAME}" "${p}"
+        ls -1 "${BUILDROOT}"/*.deb | while read -r p; do
+            name_package=$(dpkg -f "${p}" | print_field_value "Package")
+            version_package=$(dpkg -f "${p}" | print_field_value "Version")
+
+            ## Remove all packages with the same version that were added to the repository in previous builds
+            call_reprepro -A "${DISTRO_ARCH}" removefilter "${DEBDISTRONAME}" "Package (== ${name_package}), Version (== ${version_package})"
+            call_reprepro -A "${DISTRO_ARCH}" "include${p##*.}" "${DEBDISTRONAME}" "${p}"
+        done
+
+        ls -1 "${BUILDROOT}"/*.dsc | while read -r p; do
+            name_package=$(cat "${p}" | print_field_value "Source")
+            version_package=$(cat "${p}" | print_field_value "Version")
+
+            ## Remove all source packages with the same version that were added to the repository in previous builds
+            call_reprepro -A "source" removefilter "${DEBDISTRONAME}" "Package (== ${name_package}), Version (== ${version_package})"
+            call_reprepro -A "source" "include${p##*.}" "${DEBDISTRONAME}" "${p}"
         done
     else
         # deb caching is disabled, simply copy all binary packages to the deploy directory

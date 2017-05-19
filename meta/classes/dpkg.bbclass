@@ -135,6 +135,8 @@ python __anonymous () {
     if not os.path.exists(path_distributions):
         return
 
+    import json
+
     # Anonymous functions are run several times under different contexts
     # during the parsing phase, which would let the code that follows be run
     # as many times for the same package
@@ -143,7 +145,22 @@ python __anonymous () {
     # storage accross calls of the lambda (using a simple variable in the class
     # won't work, as several contexts won't allow fetching its value)
     pd = bb.persist_data.persist("DEBCACHE_PACKAGES", d)
-    if PN in pd and pd[PN] == PV:
+    pd_json = {}
+
+    if pd:
+        try:
+            pd_json = json.loads(pd)
+        except ValueError:
+            bb.warn("Cache possibly corrupted, ignoring")
+
+    if DISTRO_ARCH not in pd:
+        pd_json[DISTRO_ARCH] = {}
+    if DISTRO not in pd_json[DISTRO_ARCH]:
+        pd_json[DISTRO_ARCH][DISTRO] = {}
+    if PN not in pd_json[DISTRO_ARCH][DISTRO]:
+        pd_json[DISTRO_ARCH][DISTRO][PN] = []
+
+    if PV in pd_json[DISTRO_ARCH][DISTRO][PN]:
         return
 
     import subprocess
@@ -196,7 +213,8 @@ python __anonymous () {
 
             # Cache the results of this command so that subsequent executions of this
             # anonymous functions don't run the same code again
-            pd[PN] = PV
+            pd_json[DISTRO_ARCH][DISTRO][PN].append(PV)
+            pd = json.dumps(pd_json)
     except subprocess.CalledProcessError as e:
         bb.fatal("Unable to check for a candidate for package {0} (errorcode: {1})".format(PN, e.returncode))
 }

@@ -14,7 +14,8 @@ inherit image
 
 DEPENDS += "${IMAGE_INSTALL}"
 
-IMAGE_PREINSTALL += "apt \
+IMAGE_PREINSTALL += "init \
+                     apt \
                      dbus"
 
 WORKDIR = "${TMPDIR}/work/${PN}/${MACHINE}"

@@ -98,7 +98,15 @@ To initialize the `isar` build directory run the following commands:
 ```
 `../build` is the build directory. You may use a different name here.
 
-### Building Target Images for One Configuration
+### Make necessary utilities accessible to the shell
+
+Generating images requires the use of tools usually only accessible as root, export a proper `PATH`
+variable using the following command:
+```
+ $ export PATH="/sbin:${PATH}"
+ ```
+
+### Build Images
 
 To build target images ("targets" in BitBake terms) for one configuration,
 define the default configuration in `conf/local.conf` in the build directory,

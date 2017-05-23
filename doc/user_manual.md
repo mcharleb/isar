@@ -117,16 +117,6 @@ MACHINE ??= "qemuarm"
 DISTRO ??= "debian-jessie"
 DISTRO_ARCH ??= "armhf"
 ```
-<<<<<<< 62d3afb8a0eec4284ee4bc51cf873eda3833308f
-
-Then, call `bitbake` with image names, e.g.:
-
-=======
-$ bitbake multiconfig:qemuarm:isar-image-base \
-    multiconfig:qemui386:isar-image-base \
-    multiconfig:qemuamd64:isar-image-base \
-    multiconfig:rpi:isar-image-base
->>>>>>> doc: Document the amd64 target architecture
 ```
 bitbake isar-image-base isar-image-debug
 ```
@@ -172,7 +162,6 @@ $ bitbake multiconfig:qemuarm-wheezy:isar-image-base \
 Created images are:
 
 ```
-<<<<<<< 62d3afb8a0eec4284ee4bc51cf873eda3833308f
 tmp/deploy/images/isar-image-base-qemuarm-debian-wheezy.ext4.img
 tmp/deploy/images/isar-image-base-qemuarm-debian-jessie.ext4.img
 tmp/deploy/images/isar-image-base-qemuarm-debian-stretch.ext4.img
@@ -180,11 +169,6 @@ tmp/deploy/images/isar-image-base-qemui386-debian-jessie.ext4.img
 tmp/deploy/images/isar-image-base-qemui386-debian-stretch.ext4.img
 tmp/deploy/images/isar-image-base-qemuamd64-debian-jessie.ext4.img
 tmp/deploy/images/isar-image-base-qemuamd64-debian-stretch.ext4.img
-=======
-tmp/deploy/images/isar-image-base-qemuarm.ext4.img
-tmp/deploy/images/isar-image-base-qemui386.ext4.img
-tmp/deploy/images/isar-image-base-qemuamd64.ext4.img
->>>>>>> doc: Document the amd64 target architecture
 tmp/deploy/images/isar-image-base.rpi-sdimg
 ```
 
@@ -347,7 +331,7 @@ In Isar, each machine can use its specific Linux distro to generate `buildchroot
  - debian-wheezy
  - debian-jessie
  - debian-stretch
- - raspbian-jessie
+ - raspbian-stable
 
 User can select appropriate distro for specific machine by setting the following variable in machine configuration file:
 ```

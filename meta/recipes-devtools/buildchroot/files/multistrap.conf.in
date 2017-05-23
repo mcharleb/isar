@@ -4,6 +4,7 @@
 [General]
 noauth=true
 unpack=true
+omitdebsrc=true
 bootstrap=##DISTRO##
 aptsources=##DISTRO##
 configscript=##CONFIG_SCRIPT##

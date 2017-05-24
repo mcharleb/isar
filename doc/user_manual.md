@@ -448,8 +448,6 @@ Every machine is described in its configuration file. The file defines the follo
    - Linux kernel.
    - U-Boot or other boot loader.
    - Machine-specific firmware.
- - `KERNEL_IMAGE` - The name of kernel binary that it installed to `/boot` folder in target filesystem. This variable is used by Isar to extract the kernel binary and put it into the deploy folder. This makes sense for embedded devices, where kernel and root filesystem are written to different flash partitions. This variable is optional.
- - `INITRD_IMAGE` - The name of `ramdisk` binary. The meaning of this variable is similar to `KERNEL_IMAGE`. This variable is optional.
  - `MACHINE_SERIAL` - The name of serial device that will be used for console output.
  - `IMAGE_TYPE` - The type of images to be generated for this machine.
 
@@ -457,8 +455,6 @@ Below is an example of machine configuration file for `Raspberry Pi` board:
 ```
 IMAGE_PREINSTALL = "linux-image-rpi-rpfv \
                     raspberrypi-bootloader-nokernel"
-KERNEL_IMAGE = "vmlinuz-4.4.0-1-rpi"
-INITRD_IMAGE = "initrd.img-4.4.0-1-rpi"
 MACHINE_SERIAL = "ttyAMA0"
 IMAGE_TYPE = "rpi-sdimg"
 ```

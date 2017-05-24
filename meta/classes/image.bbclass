@@ -1,8 +1,16 @@
 # This software is a part of ISAR.
 # Copyright (C) 2015-2016 ilbers GmbH
 
-KERNEL_IMAGE ?= ""
-INITRD_IMAGE ?= ""
+def get_image_name(d, name_link):
+    S = d.getVar("S", True)
+    path_link = os.path.join(S, name_link)
+    if os.path.exists(path_link):
+        return os.path.basename(os.path.realpath(path_link))
+
+    return ""
+
+KERNEL_IMAGE = "${@get_image_name(d, 'vmlinuz')}"
+INITRD_IMAGE = "${@get_image_name(d, 'initrd.img')}"
 
 IMAGE_INSTALL ?= ""
 IMAGE_TYPE    ?= "ext4-img"
@@ -43,3 +51,15 @@ do_populate() {
 
 addtask populate before do_build
 do_populate[deptask] = "do_install"
+
+python do_update_boot_options() {
+    KERNEL_IMAGE = d.getVar("KERNEL_IMAGE", True)
+    if not KERNEL_IMAGE:
+        d.setVar("KERNEL_IMAGE", get_image_name(d, "vmlinuz"))
+
+    INITRD_IMAGE = d.getVar("INITRD_IMAGE", True)
+    if not INITRD_IMAGE:
+        d.setVar("INITRD_IMAGE", get_image_name(d, "initrd.img"))
+}
+
+addtask do_update_boot_options after do_populate

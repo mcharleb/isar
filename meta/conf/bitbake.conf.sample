@@ -58,6 +58,7 @@ UPDATECOMMAND_svn = "/usr/bin/env svn update ${SVNCOOPTS}"
 WORKDIR = "${TMPDIR}/work/${PF}"
 PERSISTENT_DIR = "${TMPDIR}/cache"
 BUILDCHROOT_DIR = "${TOPDIR}/tmp/work/buildchroot/${DISTRO_ARCH}/${DISTRO}/rootfs"
+CROSSBUILDCHROOT_DIR = "${TOPDIR}/tmp/work/crossbuildchroot/${DISTRO_ARCH}/${DISTRO}/rootfs"
 CACHE = "${TMPDIR}/cache"
 
 # Setup our default hash policy

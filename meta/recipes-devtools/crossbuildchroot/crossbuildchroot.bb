@@ -26,20 +26,6 @@ CROSSBUILDCHROOT_PREINSTALL += " \
 
 WORKDIR = "${TMPDIR}/work/${PF}/${DISTRO_ARCH}/${DISTRO}"
 
-def debian_architecture():
-    import platform, re
-    machine = platform.uname().machine
-    if re.match(r"x86[_-]64|i\d86[_-]64", machine):
-        return "amd64"
-    elif re.match(r"i\d86", machine):
-        return "i386"
-    elif re.match(r"armv", machine):
-        return "armhf"
-
-    return None
-
-ARCH_HOST ?= "${@debian_architecture()}"
-
 do_build[stamp-extra-info] = "${DISTRO_ARCH}-${DISTRO}"
 
 do_build() {
@@ -51,11 +37,15 @@ do_build() {
     install -m 755 ${THISDIR}/files/setup.sh ${WORKDIR}
     install -m 755 ${THISDIR}/files/download_dev-random ${WORKDIR}/hooks_multistrap/
 
+    ARCH_HOST_DEBIAN=$(printf %s "${ARCH_HOST}" | sed \
+                                                        -e 's/^\(x86[_-]\|i[0-9]86[_-]\)64$/amd64/' \
+                                                        -e 's/^i[0-9]86$/i386/' \
+                                                        -e 's/^armv.*/armhf/')
     # Adjust multistrap config
     sed -i 's|##CROSSBUILDCHROOT_PREINSTALL##|${CROSSBUILDCHROOT_PREINSTALL}|' ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO##|${DISTRO}|' ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO_ARCH##|${DISTRO_ARCH}|' ${WORKDIR}/multistrap.conf
-    sed -i 's|##ARCH_HOST##|${ARCH_HOST}|' ${WORKDIR}/multistrap.conf
+    sed -i "s|##ARCH_HOST_DEBIAN##|${ARCH_HOST_DEBIAN}|" ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO_APT_SOURCE##|${DISTRO_APT_SOURCE}|' ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO_SUITE##|${DISTRO_SUITE}|' ${WORKDIR}/multistrap.conf
     sed -i 's|##DISTRO_COMPONENTS##|${DISTRO_COMPONENTS}|' ${WORKDIR}/multistrap.conf
@@ -67,7 +57,7 @@ do_build() {
     cd ${TOPDIR}
 
     # Create root filesystem
-    sudo multistrap -a ${ARCH_HOST} -d "${CROSSBUILDCHROOT_DIR}" -f "${WORKDIR}/multistrap.conf" || true
+    sudo multistrap -a "${ARCH_HOST_DEBIAN}" -d "${CROSSBUILDCHROOT_DIR}" -f "${WORKDIR}/multistrap.conf" || true
 
     # Install package builder script
     sudo install -m 755 ${THISDIR}/files/build.sh "${CROSSBUILDCHROOT_DIR}"

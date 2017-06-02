@@ -4,7 +4,7 @@
 # Copyright (C) 2015-2016 ilbers GmbH
 
 CROSSBUILDCHROOT_DIR="$1"
-ARCH_HOST="$2"
+ARCH_HOST_DEBIAN="$2"
 
 set -e
 
@@ -14,14 +14,14 @@ cd "$CROSSBUILDCHROOT_DIR"
 # Get list of dependencies manually. The package is not in apt, so no apt-get
 # build-dep. dpkg-checkbuilddeps output contains version information and isn't
 # directly suitable for apt-get install.
-DEPS=$(env ARCH_HOST="${ARCH_HOST}" awk '$1 == "Build-Depends:" {
+DEPS=$(env ARCH_HOST_DEBIAN="${ARCH_HOST_DEBIAN}" awk '$1 == "Build-Depends:" {
     gsub(/\([^)]+\)/, "", $0)
     gsub(/:[a-zA-Z0-9]+ \[/, ":", $0)
     gsub(/\]/, "", $0)
     n = split(substr($0, length("Build-Depends:")+1), a, ",")
     for (i=0; i < n; i++) {
         s = a[i]
-        if (sub(/^.+:/, "", s) && s != ENVIRON["ARCH_HOST"] && s != "any" && s != "native")
+        if (sub(/^.+:/, "", s) && s != ENVIRON["ARCH_HOST_DEBIAN"] && s != "any" && s != "native")
             continue
         printf "%s", a[i]
     }

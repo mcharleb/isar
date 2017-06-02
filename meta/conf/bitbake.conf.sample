@@ -60,6 +60,7 @@ PERSISTENT_DIR = "${TMPDIR}/cache"
 BUILDCHROOT_DIR = "${TOPDIR}/tmp/work/buildchroot/${DISTRO_ARCH}/${DISTRO}/rootfs"
 CROSSBUILDCHROOT_DIR = "${TOPDIR}/tmp/work/crossbuildchroot/${DISTRO_ARCH}/${DISTRO}/rootfs"
 CACHE = "${TMPDIR}/cache"
+ARCH_HOST = "${@os.uname()[4]}"
 
 # Setup our default hash policy
 BB_SIGNATURE_HANDLER ?= "noop"

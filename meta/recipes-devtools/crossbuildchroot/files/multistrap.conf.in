@@ -9,7 +9,7 @@ bootstrap=##DISTRO##
 aptsources=##DISTRO##
 configscript=##CONFIG_SCRIPT##
 setupscript=##SETUP_SCRIPT##
-multiarch=##DISTRO_ARCH## ##ARCH_HOST##
+multiarch=##DISTRO_ARCH## ##ARCH_HOST_DEBIAN##
 hookdir=##DIR_HOOKS##
 
 [##DISTRO##]

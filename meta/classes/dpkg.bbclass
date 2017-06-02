@@ -167,6 +167,10 @@ python __anonymous () {
             for task in ["fetch", "unpack", "build", "install"]:
                 d.setVarFlag("do_{}".format(task), "noexec", "1")
 
+            import re
+            DEPENDS = d.getVar("DEPENDS", True)
+            d.setVar("DEPENDS", re.sub(r"\bbuildchroot\b", "", DEPENDS))
+
             # Cache the results of this command so that subsequent executions of this
             # anonymous functions don't run the same code again
             pd[PN] = PV

@@ -25,6 +25,9 @@ do_populate() {
 
     if [ -n "${IMAGE_INSTALL}" ]; then
         if [ "${DEBCACHE_ENABLED}" != "0" ]; then
+            # apt-get http method, gpg require /dev/null
+            sudo mount -t devtmpfs -o mode=0755,nosuid devtmpfs ${S}/dev
+
             sudo mkdir -p "${S}/${DEBCACHEMNT}"
             sudo mount -o bind "${DIR_CACHE}" "${S}/${DEBCACHEMNT}"
 
@@ -33,6 +36,7 @@ do_populate() {
                 sudo chroot "${S}" apt-get install -t "${DEBDISTRONAME}" -y --allow-unauthenticated "${package}"
             done
 
+            sudo umount ${S}/dev
             sudo umount "${S}/${DEBCACHEMNT}"
         else
             sudo mkdir -p ${S}/deb

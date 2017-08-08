@@ -1,3 +1,5 @@
 *~
 /*.patch
 __pycache__
+meta-isar-bin/apt/
+meta-isar-bin/db/

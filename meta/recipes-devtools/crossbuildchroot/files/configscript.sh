@@ -7,7 +7,7 @@ set -e
 
 # Fixes the error:
 # dpkg: error: configuration error: /etc/dpkg/dpkg.cfg.d/multiarch:1: unknown option 'foreign-architecture'
-rm /etc/dpkg/dpkg.cfg.d/multiarch
+rm -f /etc/dpkg/dpkg.cfg.d/multiarch
 # Allow `dpkg-shlibdeps` to find the libraries wrongly installed by the crossbuild packages
 ln -sf /usr/arm-linux-gnueabihf/lib /usr/lib/arm-linux-gnueabihf
 
@@ -55,5 +55,6 @@ dpkg --configure -a
 mount proc -t proc /proc
 dpkg --configure -a
 apt-get update
+apt-get install -y crossbuild-essential-armhf
 umount /proc
 umount /dev

@@ -15,7 +15,7 @@ See doc/user_manual.md.
 
 To test the QEMU image, run the following command:
 
-        $ start_i386_vm
+        $ start_armhf_vm
 
 The default root password is 'root'.
 

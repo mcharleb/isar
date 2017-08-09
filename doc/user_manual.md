@@ -119,6 +119,9 @@ MACHINE ??= "qemuarm"
 DISTRO ??= "debian-jessie"
 DISTRO_ARCH ??= "armhf"
 ```
+
+Then, call `bitbake` with image names, e.g.:
+
 ```
 bitbake isar-image-base isar-image-debug
 ```
@@ -200,54 +203,6 @@ Created images are:
 ../build-6/tmp/deploy/images/isar-image-base-qemuamd64-debian-jessie.ext4.img
 ../build-7/tmp/deploy/images/isar-image-base-qemuamd64-debian-stretch.ext4.img
 ../build-8/tmp/deploy/images/isar-image-base.rpi-sdimg
-```
-
-### Generate EFI disk images
-
-Once the image artifacts have been built (c.f. previous section), full EFI disk images can be generated using the `wic` utility.
-Currently, only the `i386` and `amd64` target architectures are supported:
-```
- # Generate an EFI image for the `i386` target architecture
- $ wic create -D sdimage-efi -o . -e multiconfig:qemui386:isar-image-base
- # Similarly, for the `amd64` target architecture
- $ wic create -D sdimage-efi -o . -e multiconfig:qemuamd64:isar-image-base
-```
-
-In order to run the images with `qemu`, an EFI firmware is required and available at the following address:
-https://github.com/tianocore/edk2/tree/3858b4a1ff09d3243fea8d07bd135478237cb8f7
-
-Note that the `ovmf` package in Debian jessie/stretch/sid contains a pre-compiled firmware, but doesn't seem to be recent
-enough to allow images to be testable under `qemu`.
-
-```
-# AMD64 image
-qemu-system-x86_64 -m 256M -nographic -bios edk2/Build/OvmfX64/RELEASE_*/FV/OVMF.fd -hda ./sdimage-*
-# i386 image
-qemu-system-i386 -m 256M -nographic -bios edk2/Build/OvmfIa32/RELEASE_*/FV/OVMF.fd -hda ./sdimage-*
-```
-
-### Generate EFI disk images
-
-Once the image artifacts have been built (c.f. previous section), full EFI disk images can be generated using the `wic` utility.
-Currently, only the `i386` and `amd64` target architectures are supported:
-```
- # Generate an EFI image for the `i386` target architecture
- $ wic create -D sdimage-efi -o . -e multiconfig:qemui386:isar-image-base
- # Similarly, for the `amd64` target architecture
- $ wic create -D sdimage-efi -o . -e multiconfig:qemuamd64:isar-image-base
-```
-
-In order to run the images with `qemu`, an EFI firmware is required and available at the following address:
-https://github.com/tianocore/edk2/tree/3858b4a1ff09d3243fea8d07bd135478237cb8f7
-
-Note that the `ovmf` package in Debian jessie/stretch/sid contains a pre-compiled firmware, but doesn't seem to be recent
-enough to allow images to be testable under `qemu`.
-
-```
-# AMD64 image
-qemu-system-x86_64 -m 256M -nographic -bios edk2/Build/OvmfX64/RELEASE_*/FV/OVMF_CODE.fd -hda ./sdimage-*
-# i386 image
-qemu-system-i386 -m 256M -nographic -bios edk2/Build/OvmfX32/RELEASE_*/FV/OVMF_CODE.fd -hda ./sdimage-*
 ```
 
 ---
@@ -375,7 +330,7 @@ In Isar, each machine can use its specific Linux distro to generate `buildchroot
  - debian-wheezy
  - debian-jessie
  - debian-stretch
- - raspbian-stable
+ - raspbian-jesse
 
 User can select appropriate distro for specific machine by setting the following variable in machine configuration file:
 ```
@@ -448,6 +403,8 @@ Every machine is described in its configuration file. The file defines the follo
    - Linux kernel.
    - U-Boot or other boot loader.
    - Machine-specific firmware.
+ - `KERNEL_IMAGE` - The name of kernel binary that it installed to `/boot` folder in target filesystem. This variable is used by Isar to extract the kernel binary and put it into the deploy folder. This makes sense for embedded devices, where kernel and root filesystem are written to different flash partitions. This variable is optional.
+ - `INITRD_IMAGE` - The name of `ramdisk` binary. The meaning of this variable is similar to `KERNEL_IMAGE`. This variable is optional.
  - `MACHINE_SERIAL` - The name of serial device that will be used for console output.
  - `IMAGE_TYPE` - The type of images to be generated for this machine.
 
@@ -455,6 +412,8 @@ Below is an example of machine configuration file for `Raspberry Pi` board:
 ```
 IMAGE_PREINSTALL = "linux-image-rpi-rpfv \
                     raspberrypi-bootloader-nokernel"
+KERNEL_IMAGE = "vmlinuz-4.4.0-1-rpi"
+INITRD_IMAGE = "initrd.img-4.4.0-1-rpi"
 MACHINE_SERIAL = "ttyAMA0"
 IMAGE_TYPE = "rpi-sdimg"
 ```

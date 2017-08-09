@@ -27,7 +27,7 @@ MACHINE ??= "qemuarm"
 # generation of buildchroot environment and target root filesystem.
 #
 # This sets the default multistrap configuration:
-DISTRO ??= "debian-jessie"
+DISTRO ??= "debian-stretch"
 DISTRO_ARCH ??= "armhf"
 
 #
@@ -152,7 +152,7 @@ CONF_VERSION = "1"
 
 #
 # The default list of extra packages to be installed.
-IMAGE_INSTALL = "hello"
+IMAGE_INSTALL = "hello hellocross"
 
 #
 # Default to setting automatically based on cpu count

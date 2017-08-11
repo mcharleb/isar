@@ -9,6 +9,7 @@ BBLAYERS ?= " \
   ##ISARROOT##/meta \
   ##ISARROOT##/meta-isar \
   ##ISARROOT##/meta-isar-bin \
+  ##ISARROOT##/meta-dragonboard \
   "
 BBLAYERS_NON_REMOVABLE ?= " \
   ##ISARROOT##/meta \

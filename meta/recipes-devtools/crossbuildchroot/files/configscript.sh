@@ -66,6 +66,6 @@ dpkg --configure -a
 rm -rf /var/lib/apt/lists/partial
 rm -f /var/lib/apt/lists/*.bz2
 apt-get update
-#apt-get install -y crossbuild-essential-armhf
+apt-get install -y gcc-aarch64-linux-gnu
 umount /proc
 umount /dev

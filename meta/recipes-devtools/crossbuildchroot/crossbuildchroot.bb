@@ -21,8 +21,8 @@ CROSSBUILDCHROOT_PREINSTALL += " \
                            docbook-to-man \
                            apt \
                            automake \
+                           crossbuild-essential-${DISTRO_ARCH} \
 "
-#  crossbuild-essential-${DISTRO_ARCH} 
 
 WORKDIR = "${TMPDIR}/work/${PF}/${DISTRO_ARCH}/${DISTRO}"
 

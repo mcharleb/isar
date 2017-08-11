@@ -3,6 +3,14 @@
 # This software is a part of ISAR.
 # Copyright (C) 2015-2017 ilbers GmbH
 
+finish() {
+  echo "------- finish ---------"
+  # clean up the mounted filesystems
+  ([ -f /proc/uptime ] && sudo umount /proc) || true
+  ([ -c /dev/null ] && sudo umount /dev) || true
+}
+trap finish EXIT
+
 set -e
 
 cat >> /etc/default/locale << EOF
@@ -37,15 +45,20 @@ export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true
 export LC_ALL=C LANGUAGE=C LANG=C
 
 #run pre installation script
+echo "----- dash.preinst ----------"
 /var/lib/dpkg/info/dash.preinst install
 
 # apt-get http method, gpg require /dev/null
+echo "----- mounting /dev ----------"
 mount -t devtmpfs -o mode=0755,nosuid devtmpfs /dev
 
 #configuring packages
 dpkg --configure -a
+echo "----- mounting /proc ----------"
 mount proc -t proc /proc
 dpkg --configure -a
+rm -rf /var/lib/apt/lists/partial
+rm -f /var/lib/apt/lists/*.bz2
 apt-get update
 umount /proc
 umount /dev
